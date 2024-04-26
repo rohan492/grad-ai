@@ -1,0 +1,25 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend Tasks to leverage Gradient-AI's APIs for ML related work",
+  "main": "server.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rohan492/grad-ai.git"
+  },
+  "keywords": [
+    "AI",
+    "ML",
+    "React",
+    "RAG"
+  ],
+  "author": "Rohan Mathur",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rohan492/grad-ai/issues"
+  },
+  "homepage": "https://github.com/rohan492/grad-ai#readme"
+}
