@@ -1,6 +1,5 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+
 import "./App.css";
 
 import {
@@ -13,6 +12,7 @@ import {
 
 import LogIn from './pages/Auth/Login.jsx'
 import ChatWindow from './pages/ChatWindow/ChatWindow.jsx'
+import Main from './pages/Main/Main.jsx'
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("user"))
@@ -31,8 +31,8 @@ function App() {
         path="/"
         element={
           isLoggedIn ? (
-            // <Main setIsLoggedIn={setIsLoggedIn} />
-            <ChatWindow />
+            <Main setIsLoggedIn={setIsLoggedIn} />
+            // <ChatWindow />
           ) : (
             <Navigate to="/login" />
           )

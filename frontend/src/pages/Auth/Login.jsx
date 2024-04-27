@@ -3,7 +3,7 @@ import React from 'react'
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google'
 import { useLocation } from 'react-router-dom'
 import { jwtDecode } from 'jwt-decode'
-import { message } from 'antd'
+import { Card, message } from 'antd'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -37,17 +37,20 @@ const LogIn = ({ setIsLoggedIn }) => {
   const { pathname } = useLocation()
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID}>
-      <GoogleLogin
-          onSuccess={onSuccess}
-          onError={onFailure}
-          text={`${pathname === "/login" ? "signin_with" : "signup_with"}`}
-          size="medium"
-          width={200}
-          logo_alignment="left"
-          shape="pill"
-          theme="filled_black"
-          style={{ backgroundColor: "#202124" }}
-        />
+      <div className='w-full flex justify-center items-center h-screen bg-[#213547]'>
+        <Card className='bg-black shadow-3xl h-[10%]'>
+          <GoogleLogin
+              onSuccess={onSuccess}
+              onError={onFailure}
+              text={`${pathname === "/login" ? "signin_with" : "signup_with"}`}
+              size="medium"
+              width={200}
+              logo_alignment="left"
+              shape="pill"
+              theme="filled_black"
+            />
+        </Card>
+      </div>
     </GoogleOAuthProvider>
   )
 }

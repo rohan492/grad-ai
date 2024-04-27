@@ -6,7 +6,6 @@ const ChatWindow = () => {
   return (
     <div className='flex flex-col items-center justify-center gap-5'>
         ChatWindow
-        <button onClick={() => {localStorage.clear(); navigate("/login")}}>Logout</button>
     </div>
   )
 }
