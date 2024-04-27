@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Backend Tasks to leverage Gradient-AI's APIs for ML related work",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "test": "npm run test"
   },
@@ -21,5 +22,12 @@
   "bugs": {
     "url": "https://github.com/rohan492/grad-ai/issues"
   },
-  "homepage": "https://github.com/rohan492/grad-ai#readme"
+  "homepage": "https://github.com/rohan492/grad-ai#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.3.2",
+    "multer": "^1.4.5-lts.1"
+  }
 }
