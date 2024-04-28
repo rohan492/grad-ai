@@ -1,0 +1,7 @@
+.chatWindowTextArea {
+    resize: none !important;
+}
+
+.cursorNotAllowed {
+    cursor: not-allowed !important;
+}
