@@ -54,11 +54,13 @@ const Main = () => {
               key: "1",
               icon: <QuestionOutlined />,
               label: "Question/Answer",
+              onClick: () => navigate('/chat')
             },
             {
               key: "2",
               icon: <AudioOutlined />,
               label: "Audio Transcription",
+              onClick: () => navigate('/upload')
             },
             {
               key: "3",
