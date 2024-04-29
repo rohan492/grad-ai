@@ -1,2 +1,8 @@
 node_modules
 environments/environment.js
+
+# Ignore all files in the uploads folder
+uploads/*
+
+# Do not ignore the uploads folder itself
+!uploads/

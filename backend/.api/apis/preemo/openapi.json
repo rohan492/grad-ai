@@ -1,0 +1,4968 @@
+{
+  "externalDocs": {
+    "description": "Gradient AI documentation",
+    "url": "https://docs.gradient.ai"
+  },
+  "info": {
+    "contact": {
+      "email": "support@gradient.ai",
+      "name": "Gradient AI Support",
+      "url": "https://docs.gradient.ai/discuss"
+    },
+    "description": "Interface for interacting with Gradient AI.",
+    "title": "Gradient AI API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.0.3",
+  "security": [
+    {
+      "AccessToken": []
+    }
+  ],
+  "servers": [
+    {
+      "description": "Production endpoint",
+      "url": "https://api.gradient.ai/api"
+    },
+    {
+      "url": "http://localhost:3026/api"
+    }
+  ],
+  "tags": [
+    {
+      "description": "Operations related to models.",
+      "name": "Models"
+    },
+    {
+      "description": "Operations related to embeddings.",
+      "name": "Embeddings"
+    }
+  ],
+  "x-readme": {
+    "samples-languages": [
+      "curl",
+      "python",
+      "node"
+    ]
+  },
+  "components": {
+    "securitySchemes": {
+      "AccessToken": {
+        "scheme": "bearer",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "AnalyzeSentimentSuccess": {
+        "type": "object",
+        "properties": {
+          "sentiment": {
+            "type": "string",
+            "enum": [
+              "negative",
+              "neutral",
+              "positive"
+            ]
+          }
+        },
+        "required": [
+          "sentiment"
+        ]
+      },
+      "AnalyzeSentimentError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "AnalyzeSentimentBodyParams": {
+        "type": "object",
+        "properties": {
+          "document": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The document that will be analyzed to determine the sentiment."
+          },
+          "examples": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "object",
+              "properties": {
+                "document": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sentiment": {
+                  "type": "string",
+                  "enum": [
+                    "negative",
+                    "neutral",
+                    "positive"
+                  ]
+                }
+              },
+              "required": [
+                "document",
+                "sentiment"
+              ]
+            },
+            "description": "Example pairs of documents and sentiments."
+          }
+        },
+        "required": [
+          "document"
+        ]
+      },
+      "GenerateAnswerSuccess": {
+        "type": "object",
+        "properties": {
+          "answer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ragContext": {
+            "type": "object",
+            "properties": {
+              "documents": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "content": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "fileName": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "content",
+                    "fileName"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "documents"
+            ]
+          }
+        },
+        "required": [
+          "answer"
+        ]
+      },
+      "GenerateAnswerError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "GenerateAnswerBodyParams": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "collectionId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "rag"
+                    ]
+                  }
+                },
+                "required": [
+                  "collectionId",
+                  "type"
+                ],
+                "description": "The reference RAG that must be used to answer the question."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "document"
+                    ]
+                  },
+                  "value": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "type",
+                  "value"
+                ],
+                "description": "The document that must be used to answer the question."
+              }
+            ]
+          }
+        },
+        "required": [
+          "question",
+          "source"
+        ]
+      },
+      "ExtractEntitySuccess": {
+        "type": "object",
+        "properties": {
+          "entity": {
+            "type": "object",
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "entity"
+        ]
+      },
+      "ExtractEntityError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "ExtractEntityBodyParams": {
+        "type": "object",
+        "properties": {
+          "document": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The document from which to extract data."
+          },
+          "schema": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "required": {
+                  "type": "boolean",
+                  "nullable": true,
+                  "default": false
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "boolean",
+                    "number",
+                    "string"
+                  ]
+                }
+              },
+              "required": [
+                "type"
+              ]
+            },
+            "description": "The expected schema of the entity result."
+          }
+        },
+        "required": [
+          "document",
+          "schema"
+        ]
+      },
+      "ExtractPdfSuccess": {
+        "type": "object",
+        "properties": {
+          "pages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "images": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "string"
+                      },
+                      "format": {
+                        "type": "string",
+                        "enum": [
+                          "base64-png"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "data",
+                      "format"
+                    ]
+                  }
+                },
+                "pageNumber": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "tables": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "tableRows": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "cells": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "cellValue": {
+                                    "type": "string"
+                                  },
+                                  "colSpan": {
+                                    "type": "integer",
+                                    "nullable": true,
+                                    "minimum": 0,
+                                    "exclusiveMinimum": true
+                                  },
+                                  "rowSpan": {
+                                    "type": "integer",
+                                    "nullable": true,
+                                    "minimum": 0,
+                                    "exclusiveMinimum": true
+                                  }
+                                },
+                                "required": [
+                                  "cellValue",
+                                  "colSpan",
+                                  "rowSpan"
+                                ]
+                              }
+                            },
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "table_data_row",
+                                "table_header"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "cells",
+                            "type"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "tableRows"
+                    ]
+                  }
+                },
+                "text": {
+                  "type": "string"
+                },
+                "textBlocks": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "footer",
+                          "header",
+                          "section_title",
+                          "text",
+                          "title"
+                        ]
+                      },
+                      "texts": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "texts"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "images",
+                "pageNumber",
+                "tables",
+                "text",
+                "textBlocks"
+              ]
+            }
+          },
+          "text": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "pages",
+          "text",
+          "title"
+        ]
+      },
+      "ExtractPdfError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "ExtractPdfBodyParams": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary"
+          }
+        },
+        "required": [
+          "file"
+        ]
+      },
+      "PersonalizeDocumentSuccess": {
+        "type": "object",
+        "properties": {
+          "personalizedDocument": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "personalizedDocument"
+        ]
+      },
+      "PersonalizeDocumentError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "PersonalizeDocumentBodyParams": {
+        "type": "object",
+        "properties": {
+          "audienceDescription": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The description of the audience that the document should be personalized for."
+          },
+          "document": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The document that will be personalized."
+          }
+        },
+        "required": [
+          "audienceDescription",
+          "document"
+        ]
+      },
+      "SummarizeDocumentSuccess": {
+        "type": "object",
+        "properties": {
+          "summary": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "summary"
+        ]
+      },
+      "SummarizeDocumentError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "SummarizeDocumentBodyParams": {
+        "type": "object",
+        "properties": {
+          "document": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The document to summarize."
+          },
+          "examples": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "object",
+              "properties": {
+                "document": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "summary": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "document",
+                "summary"
+              ]
+            },
+            "description": "Examples of how to summarize documents."
+          },
+          "length": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "short",
+              "medium",
+              "long"
+            ],
+            "description": "Roughly how long the summary should be."
+          }
+        },
+        "required": [
+          "document"
+        ]
+      },
+      "GetAudioTranscriptionSuccess": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "result": {
+                "nullable": true
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "cancelled",
+                  "failed",
+                  "pending",
+                  "pendingCancellation",
+                  "running"
+                ]
+              }
+            },
+            "required": [
+              "result",
+              "status"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "result": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "succeeded"
+                ]
+              }
+            },
+            "required": [
+              "result",
+              "status"
+            ]
+          }
+        ]
+      },
+      "GetAudioTranscriptionError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "CreateAudioTranscriptionSuccess": {
+        "type": "object",
+        "properties": {
+          "transcriptionId": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "transcriptionId"
+        ]
+      },
+      "CreateAudioTranscriptionError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "CreateAudioTranscriptionBodyParams": {
+        "type": "object",
+        "properties": {
+          "fileId": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "fileId"
+        ]
+      },
+      "ListEmbeddingsSuccess": {
+        "type": "object",
+        "properties": {
+          "embeddingsModels": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "slug": {
+                  "type": "string",
+                  "enum": [
+                    "bge-large"
+                  ]
+                }
+              },
+              "required": [
+                "slug"
+              ]
+            }
+          }
+        },
+        "required": [
+          "embeddingsModels"
+        ]
+      },
+      "ListEmbeddingsError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "GenerateEmbeddingSuccess": {
+        "type": "object",
+        "properties": {
+          "embeddings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "embedding": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "index": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "embedding",
+                "index"
+              ]
+            }
+          }
+        },
+        "required": [
+          "embeddings"
+        ]
+      },
+      "GenerateEmbeddingError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "GenerateEmbeddingBodyParams": {
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "input": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "input"
+              ]
+            },
+            "minItems": 1,
+            "maxItems": 256
+          }
+        },
+        "required": [
+          "inputs"
+        ]
+      },
+      "UploadFileSuccess": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "UploadFileError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "UploadFileBodyParams": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary"
+          }
+        },
+        "required": [
+          "file"
+        ]
+      },
+      "baseModel": {
+        "type": "object",
+        "properties": {
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "complete",
+                "fineTune"
+              ]
+            }
+          },
+          "id": {
+            "type": "string",
+            "minLength": 50,
+            "maxLength": 50
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "baseModel"
+            ]
+          }
+        },
+        "required": [
+          "capabilities",
+          "id",
+          "name",
+          "slug",
+          "type"
+        ]
+      },
+      "modelAdapter": {
+        "type": "object",
+        "properties": {
+          "baseModelId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "id": {
+            "type": "string",
+            "minLength": 50,
+            "maxLength": 50
+          },
+          "latestUpdateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "modelAdapter"
+            ]
+          }
+        },
+        "required": [
+          "baseModelId",
+          "id",
+          "latestUpdateTime",
+          "name",
+          "type"
+        ]
+      },
+      "ListModelsSuccess": {
+        "type": "object",
+        "properties": {
+          "models": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "capabilities": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "complete",
+                          "fineTune"
+                        ]
+                      }
+                    },
+                    "id": {
+                      "type": "string",
+                      "minLength": 50,
+                      "maxLength": 50
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "slug": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "baseModel"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "capabilities",
+                    "id",
+                    "name",
+                    "slug",
+                    "type"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "baseModelId": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "id": {
+                      "type": "string",
+                      "minLength": 50,
+                      "maxLength": 50
+                    },
+                    "latestUpdateTime": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "modelAdapter"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "baseModelId",
+                    "id",
+                    "latestUpdateTime",
+                    "name",
+                    "type"
+                  ]
+                }
+              ],
+              "discriminator": {
+                "propertyName": "type"
+              }
+            }
+          }
+        },
+        "required": [
+          "models"
+        ]
+      },
+      "ListModelsError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "CreateModelSuccess": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "CreateModelError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "CreateModelBodyParams": {
+        "type": "object",
+        "properties": {
+          "initialHyperparameters": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "loraHyperparameters": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "rank": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 0,
+                    "exclusiveMinimum": true,
+                    "maximum": 32
+                  }
+                }
+              },
+              "trainingArguments": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "learningRate": {
+                    "type": "number",
+                    "nullable": true,
+                    "minimum": 0,
+                    "exclusiveMinimum": true,
+                    "maximum": 1,
+                    "exclusiveMaximum": true
+                  }
+                }
+              }
+            }
+          },
+          "model": {
+            "type": "object",
+            "properties": {
+              "baseModelId": {
+                "type": "string",
+                "minLength": 1,
+                "description": "The foundational model you are creating a new instance of for fine-tuning."
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "description": "What your new fine-tuned model will be called."
+              }
+            },
+            "required": [
+              "baseModelId",
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "model"
+        ]
+      },
+      "DeleteModelSuccess": {
+        "type": "object",
+        "properties": {}
+      },
+      "DeleteModelError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "GetModelSuccess": {
+        "type": "object",
+        "properties": {
+          "baseModelId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "id": {
+            "type": "string",
+            "minLength": 50,
+            "maxLength": 50
+          },
+          "latestUpdateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "modelAdapter"
+            ]
+          }
+        },
+        "required": [
+          "baseModelId",
+          "id",
+          "latestUpdateTime",
+          "name",
+          "type"
+        ]
+      },
+      "GetModelError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "CompleteModelSuccess": {
+        "type": "object",
+        "properties": {
+          "finishReason": {
+            "type": "string"
+          },
+          "generatedOutput": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "finishReason",
+          "generatedOutput"
+        ]
+      },
+      "CompleteModelError": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "flaggedContent": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "sample": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "sample"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "flaggedContent"
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "flaggedContent"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "payload",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "formattedValidationError": {
+                    "nullable": true
+                  },
+                  "validationError": {}
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "bodyParsingError"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "payload",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "formattedValidationError": {
+                    "nullable": true
+                  },
+                  "validationError": {}
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "queryOrPathParsingError"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "payload",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "failed"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "modelDoesNotSupportGuidance"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "noRagDocumentsFound"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "ragRequiresAutoTemplating"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "unknownBaseModel"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "unknownModelAdapter"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "unknownRagCollection"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "unprocessableContent"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "type"
+            ]
+          }
+        ]
+      },
+      "CompleteModelBodyParams": {
+        "type": "object",
+        "properties": {
+          "autoTemplate": {
+            "type": "boolean",
+            "nullable": true,
+            "default": true,
+            "description": "Automatically adds the recommended base model templating."
+          },
+          "guidance": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "choice"
+                ]
+              },
+              "value": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 32
+                },
+                "minItems": 1,
+                "maxItems": 10,
+                "description": "The set of possible values that should be generated by the model"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ]
+          },
+          "maxGeneratedTokenCount": {
+            "type": "integer",
+            "nullable": true,
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "maximum": 512,
+            "exclusiveMaximum": true,
+            "description": "The maximum number of tokens to generate."
+          },
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The prompt string you are providing the model, to which the model will generate a completion in response."
+          },
+          "rag": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "collectionId": {
+                "type": "string",
+                "minLength": 1,
+                "description": "The ID of the RAG collection to retrieve context from before running completion"
+              }
+            },
+            "required": [
+              "collectionId"
+            ]
+          },
+          "temperature": {
+            "type": "number",
+            "nullable": true,
+            "description": "This parameter adjusts the degree of randomness in generation. Higher temperature results in more diverse generations."
+          },
+          "topK": {
+            "type": "integer",
+            "nullable": true,
+            "description": "This parameter ensures that only the top k most likely tokens are considered for generation at each step."
+          },
+          "topP": {
+            "type": "number",
+            "nullable": true,
+            "description": "This parameter ensures that only the most likely tokens, with total probability mass of p, are considered for generation at each step. If topK is also enabled, topP acts after topK."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "FineTuneModelSuccess": {
+        "type": "object",
+        "properties": {
+          "numberOfTrainableTokens": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sumLoss": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "numberOfTrainableTokens",
+          "sumLoss"
+        ]
+      },
+      "FineTuneModelError": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "formattedValidationError": {
+                    "nullable": true
+                  },
+                  "validationError": {}
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "bodyParsingError"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "payload",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "flaggedContent": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "sample": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "sample"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "flaggedContent"
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "flaggedContent"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "payload",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "formattedValidationError": {
+                    "nullable": true
+                  },
+                  "validationError": {}
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "queryOrPathParsingError"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "payload",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "modelIncapableOfFineTuning"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "nanLoss"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "unknownModelAdapter"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "unprocessableContent"
+                ]
+              }
+            },
+            "required": [
+              "message",
+              "type"
+            ]
+          }
+        ]
+      },
+      "FineTuneModelBodyParams": {
+        "type": "object",
+        "properties": {
+          "samples": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "fineTuningParameters": {
+                  "type": "object",
+                  "nullable": true,
+                  "properties": {
+                    "multiplier": {
+                      "type": "number",
+                      "nullable": true,
+                      "minimum": 0,
+                      "exclusiveMinimum": true
+                    }
+                  }
+                },
+                "inputs": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "parseSpecialTokens": {
+                            "type": "boolean",
+                            "default": true
+                          },
+                          "trainable": {
+                            "type": "boolean",
+                            "default": true
+                          },
+                          "value": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "required": [
+                          "value"
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "inputs"
+              ]
+            }
+          }
+        },
+        "required": [
+          "samples"
+        ]
+      },
+      "ListRagCollectionsSuccess": {
+        "type": "object",
+        "properties": {
+          "ragCollections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "creationTime": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "latestUpdateTime": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "slug": {
+                  "type": "string",
+                  "enum": [
+                    "bge-large"
+                  ]
+                }
+              },
+              "required": [
+                "creationTime",
+                "id",
+                "latestUpdateTime",
+                "name",
+                "slug"
+              ]
+            }
+          }
+        },
+        "required": [
+          "ragCollections"
+        ]
+      },
+      "ListRagCollectionsError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "CreateRagCollectionSuccess": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "CreateRagCollectionError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "CreateRagCollectionBodyParams": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ]
+            },
+            "maxItems": 20
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "slug": {
+            "type": "string",
+            "enum": [
+              "bge-large"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "slug"
+        ]
+      },
+      "DeleteRagCollectionSuccess": {
+        "type": "object",
+        "properties": {}
+      },
+      "DeleteRagCollectionError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "GetRagCollectionSuccess": {
+        "type": "object",
+        "properties": {
+          "creationTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "cancelled",
+                    "failed",
+                    "succeeded",
+                    "pending",
+                    "pendingCancellation",
+                    "running"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "status"
+              ]
+            }
+          },
+          "latestUpdateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "slug": {
+            "type": "string",
+            "enum": [
+              "bge-large"
+            ]
+          }
+        },
+        "required": [
+          "creationTime",
+          "files",
+          "latestUpdateTime",
+          "name",
+          "slug"
+        ]
+      },
+      "GetRagCollectionError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "AddFilesToRagCollectionSuccess": {
+        "type": "object",
+        "properties": {}
+      },
+      "AddFilesToRagCollectionError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "AddFilesToRagCollectionBodyParams": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ]
+            },
+            "maxItems": 20
+          }
+        },
+        "required": [
+          "files"
+        ]
+      }
+    },
+    "parameters": {}
+  },
+  "paths": {
+    "/blocks/analyze-sentiment": {
+      "post": {
+        "description": "Analyzes text to determine the emotional tone of the message.",
+        "operationId": "AnalyzeSentiment",
+        "summary": "Sentiment analysis",
+        "tags": [
+          "Blocks"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "document": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "The document that will be analyzed to determine the sentiment."
+                  },
+                  "examples": {
+                    "type": "array",
+                    "nullable": true,
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "document": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "sentiment": {
+                          "type": "string",
+                          "enum": [
+                            "negative",
+                            "neutral",
+                            "positive"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "document",
+                        "sentiment"
+                      ]
+                    },
+                    "description": "Example pairs of documents and sentiments."
+                  }
+                },
+                "required": [
+                  "document"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sentiment": {
+                      "type": "string",
+                      "enum": [
+                        "negative",
+                        "neutral",
+                        "positive"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "sentiment"
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/blocks/answer": {
+      "post": {
+        "description": "Answers questions using the provided context.",
+        "operationId": "GenerateAnswer",
+        "summary": "Document question & answer",
+        "tags": [
+          "Blocks"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "question": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "source": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "collectionId": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "rag"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "collectionId",
+                          "type"
+                        ],
+                        "description": "The reference RAG that must be used to answer the question."
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "document"
+                            ]
+                          },
+                          "value": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "value"
+                        ],
+                        "description": "The document that must be used to answer the question."
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "question",
+                  "source"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "answer": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "ragContext": {
+                      "type": "object",
+                      "properties": {
+                        "documents": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "content": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "fileName": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "required": [
+                              "content",
+                              "fileName"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "documents"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "answer"
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/blocks/extract": {
+      "post": {
+        "description": "Extracts an entity from the document with the specified fields and types.",
+        "operationId": "ExtractEntity",
+        "summary": "Entity extraction",
+        "tags": [
+          "Blocks"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "document": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "The document from which to extract data."
+                  },
+                  "schema": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "required": {
+                          "type": "boolean",
+                          "nullable": true,
+                          "default": false
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "boolean",
+                            "number",
+                            "string"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ]
+                    },
+                    "description": "The expected schema of the entity result."
+                  }
+                },
+                "required": [
+                  "document",
+                  "schema"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "entity": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "anyOf": [
+                          {
+                            "type": "boolean"
+                          },
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "entity"
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/blocks/extract-pdf": {
+      "post": {
+        "description": "Extracts content from the PDF.",
+        "operationId": "ExtractPdf",
+        "summary": "PDF extraction",
+        "tags": [
+          "Blocks"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pages": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "images": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "data": {
+                                  "type": "string"
+                                },
+                                "format": {
+                                  "type": "string",
+                                  "enum": [
+                                    "base64-png"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "data",
+                                "format"
+                              ]
+                            }
+                          },
+                          "pageNumber": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "exclusiveMinimum": true
+                          },
+                          "tables": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string"
+                                },
+                                "tableRows": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "cells": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "cellValue": {
+                                              "type": "string"
+                                            },
+                                            "colSpan": {
+                                              "type": "integer",
+                                              "nullable": true,
+                                              "minimum": 0,
+                                              "exclusiveMinimum": true
+                                            },
+                                            "rowSpan": {
+                                              "type": "integer",
+                                              "nullable": true,
+                                              "minimum": 0,
+                                              "exclusiveMinimum": true
+                                            }
+                                          },
+                                          "required": [
+                                            "cellValue",
+                                            "colSpan",
+                                            "rowSpan"
+                                          ]
+                                        }
+                                      },
+                                      "type": {
+                                        "type": "string",
+                                        "enum": [
+                                          "table_data_row",
+                                          "table_header"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "cells",
+                                      "type"
+                                    ]
+                                  }
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "tableRows"
+                              ]
+                            }
+                          },
+                          "text": {
+                            "type": "string"
+                          },
+                          "textBlocks": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "kind": {
+                                  "type": "string",
+                                  "enum": [
+                                    "footer",
+                                    "header",
+                                    "section_title",
+                                    "text",
+                                    "title"
+                                  ]
+                                },
+                                "texts": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              "required": [
+                                "kind",
+                                "texts"
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "images",
+                          "pageNumber",
+                          "tables",
+                          "text",
+                          "textBlocks"
+                        ]
+                      }
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "pages",
+                    "text",
+                    "title"
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/blocks/personalize": {
+      "post": {
+        "description": "Personalizes the document in a tone and style specific to the described target audience.",
+        "operationId": "PersonalizeDocument",
+        "summary": "Document personalization",
+        "tags": [
+          "Blocks"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "audienceDescription": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "The description of the audience that the document should be personalized for."
+                  },
+                  "document": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "The document that will be personalized."
+                  }
+                },
+                "required": [
+                  "audienceDescription",
+                  "document"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "personalizedDocument": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "personalizedDocument"
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/blocks/summarize": {
+      "post": {
+        "description": "Generates a summary of the document using the provided guidance.",
+        "operationId": "SummarizeDocument",
+        "summary": "Document summary",
+        "tags": [
+          "Blocks"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "document": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "The document to summarize."
+                  },
+                  "examples": {
+                    "type": "array",
+                    "nullable": true,
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "document": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "summary": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "document",
+                        "summary"
+                      ]
+                    },
+                    "description": "Examples of how to summarize documents."
+                  },
+                  "length": {
+                    "type": "string",
+                    "nullable": true,
+                    "enum": [
+                      "short",
+                      "medium",
+                      "long"
+                    ],
+                    "description": "Roughly how long the summary should be."
+                  }
+                },
+                "required": [
+                  "document"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "summary": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "summary"
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/blocks/transcription": {
+      "get": {
+        "description": "Gets the result of the audio transcription job.",
+        "operationId": "GetAudioTranscription",
+        "summary": "Get audio transcription",
+        "tags": [
+          "Blocks"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "transcriptionId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "nullable": true
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "cancelled",
+                            "failed",
+                            "pending",
+                            "pendingCancellation",
+                            "running"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "result",
+                        "status"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "object",
+                          "properties": {
+                            "text": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "text"
+                          ]
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "succeeded"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "result",
+                        "status"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Creates an audio transcription job.",
+        "operationId": "CreateAudioTranscription",
+        "summary": "Create audio transcription",
+        "tags": [
+          "Blocks"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fileId": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "fileId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "transcriptionId": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "transcriptionId"
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/embeddings": {
+      "get": {
+        "description": "Lists the currently available embeddings models and provides basic information, such as the slug.",
+        "operationId": "ListEmbeddings",
+        "summary": "List available embeddings models",
+        "tags": [
+          "Embeddings"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "embeddingsModels": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "slug": {
+                            "type": "string",
+                            "enum": [
+                              "bge-large"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "slug"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "embeddingsModels"
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/embeddings/{slug}": {
+      "post": {
+        "description": "Generates normalized embeddings with the given embeddings model.",
+        "operationId": "GenerateEmbedding",
+        "summary": "Generate embeddings",
+        "tags": [
+          "Embeddings"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bge-large"
+              ]
+            },
+            "required": true,
+            "name": "slug",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "inputs": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "input": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "input"
+                      ]
+                    },
+                    "minItems": 1,
+                    "maxItems": 256
+                  }
+                },
+                "required": [
+                  "inputs"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "embeddings": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "embedding": {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            }
+                          },
+                          "index": {
+                            "type": "integer",
+                            "minimum": 0
+                          }
+                        },
+                        "required": [
+                          "embedding",
+                          "index"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "embeddings"
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/files": {
+      "post": {
+        "description": "Stores uploaded file.",
+        "operationId": "UploadFile",
+        "summary": "File upload",
+        "tags": [
+          "Files"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "audioFile",
+                "ragUserFile"
+              ]
+            },
+            "required": true,
+            "name": "type",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/models": {
+      "get": {
+        "description": "Lists the currently available models in the selected workspace and provides basic information, such as the model name, ID and whether it is a base or fine-tuned model.",
+        "operationId": "ListModels",
+        "summary": "List available models",
+        "tags": [
+          "Models"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "complete",
+                "fineTune",
+                "any"
+              ],
+              "default": "fineTune",
+              "description": "Only lists the available models with the specified capability."
+            },
+            "required": false,
+            "name": "capability",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "boolean",
+              "nullable": true,
+              "default": false,
+              "description": "Only lists the available foundational models. Excludes fine-tuned models."
+            },
+            "required": false,
+            "name": "onlyBase",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "models": {
+                      "type": "array",
+                      "items": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "capabilities": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "enum": [
+                                    "complete",
+                                    "fineTune"
+                                  ]
+                                }
+                              },
+                              "id": {
+                                "type": "string",
+                                "minLength": 50,
+                                "maxLength": 50
+                              },
+                              "name": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "slug": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "baseModel"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "capabilities",
+                              "id",
+                              "name",
+                              "slug",
+                              "type"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "baseModelId": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "id": {
+                                "type": "string",
+                                "minLength": 50,
+                                "maxLength": 50
+                              },
+                              "latestUpdateTime": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "name": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "modelAdapter"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "baseModelId",
+                              "id",
+                              "latestUpdateTime",
+                              "name",
+                              "type"
+                            ]
+                          }
+                        ],
+                        "discriminator": {
+                          "propertyName": "type"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "models"
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Creates a new instance of a model based on a specified model from the existing list.",
+        "operationId": "CreateModel",
+        "summary": "Create model",
+        "tags": [
+          "Models"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "initialHyperparameters": {
+                    "type": "object",
+                    "nullable": true,
+                    "properties": {
+                      "loraHyperparameters": {
+                        "type": "object",
+                        "nullable": true,
+                        "properties": {
+                          "rank": {
+                            "type": "integer",
+                            "nullable": true,
+                            "minimum": 0,
+                            "exclusiveMinimum": true,
+                            "maximum": 32
+                          }
+                        }
+                      },
+                      "trainingArguments": {
+                        "type": "object",
+                        "nullable": true,
+                        "properties": {
+                          "learningRate": {
+                            "type": "number",
+                            "nullable": true,
+                            "minimum": 0,
+                            "exclusiveMinimum": true,
+                            "maximum": 1,
+                            "exclusiveMaximum": true
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "model": {
+                    "type": "object",
+                    "properties": {
+                      "baseModelId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The foundational model you are creating a new instance of for fine-tuning."
+                      },
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "What your new fine-tuned model will be called."
+                      }
+                    },
+                    "required": [
+                      "baseModelId",
+                      "name"
+                    ]
+                  }
+                },
+                "required": [
+                  "model"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/models/{id}": {
+      "delete": {
+        "description": "Deletes the fine-tuned model.",
+        "operationId": "DeleteModel",
+        "summary": "Delete model",
+        "tags": [
+          "Models"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The ID of the model that is being deleted."
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "Describes the specified model, including the model ID, name, and base model ID.",
+        "operationId": "GetModel",
+        "summary": "Describe model",
+        "tags": [
+          "Models"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 50,
+              "maxLength": 50,
+              "description": "The ID of the model that is being described."
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "baseModelId": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "id": {
+                      "type": "string",
+                      "minLength": 50,
+                      "maxLength": 50
+                    },
+                    "latestUpdateTime": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "modelAdapter"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "baseModelId",
+                    "id",
+                    "latestUpdateTime",
+                    "name",
+                    "type"
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/models/{id}/complete": {
+      "post": {
+        "description": "Completes your fine-tuned model with the specified prompt string. The model will generate a completion.",
+        "operationId": "CompleteModel",
+        "summary": "Complete model",
+        "tags": [
+          "Models"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The ID of the base model or fine-tuned model that is being completed."
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "autoTemplate": {
+                    "type": "boolean",
+                    "nullable": true,
+                    "default": true,
+                    "description": "Automatically adds the recommended base model templating."
+                  },
+                  "guidance": {
+                    "type": "object",
+                    "nullable": true,
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "choice"
+                        ]
+                      },
+                      "value": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 32
+                        },
+                        "minItems": 1,
+                        "maxItems": 10,
+                        "description": "The set of possible values that should be generated by the model"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "value"
+                    ]
+                  },
+                  "maxGeneratedTokenCount": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 0,
+                    "exclusiveMinimum": true,
+                    "maximum": 512,
+                    "exclusiveMaximum": true,
+                    "description": "The maximum number of tokens to generate."
+                  },
+                  "query": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "The prompt string you are providing the model, to which the model will generate a completion in response."
+                  },
+                  "rag": {
+                    "type": "object",
+                    "nullable": true,
+                    "properties": {
+                      "collectionId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The ID of the RAG collection to retrieve context from before running completion"
+                      }
+                    },
+                    "required": [
+                      "collectionId"
+                    ]
+                  },
+                  "temperature": {
+                    "type": "number",
+                    "nullable": true,
+                    "description": "This parameter adjusts the degree of randomness in generation. Higher temperature results in more diverse generations."
+                  },
+                  "topK": {
+                    "type": "integer",
+                    "nullable": true,
+                    "description": "This parameter ensures that only the top k most likely tokens are considered for generation at each step."
+                  },
+                  "topP": {
+                    "type": "number",
+                    "nullable": true,
+                    "description": "This parameter ensures that only the most likely tokens, with total probability mass of p, are considered for generation at each step. If topK is also enabled, topP acts after topK."
+                  }
+                },
+                "required": [
+                  "query"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "finishReason": {
+                      "type": "string"
+                    },
+                    "generatedOutput": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "finishReason",
+                    "generatedOutput"
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "payload": {
+                          "type": "object",
+                          "properties": {
+                            "flaggedContent": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "sample": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "sample"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "flaggedContent"
+                          ]
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "flaggedContent"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "message",
+                        "payload",
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "payload": {
+                          "type": "object",
+                          "properties": {
+                            "formattedValidationError": {
+                              "nullable": true
+                            },
+                            "validationError": {}
+                          }
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "bodyParsingError"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "message",
+                        "payload",
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "payload": {
+                          "type": "object",
+                          "properties": {
+                            "formattedValidationError": {
+                              "nullable": true
+                            },
+                            "validationError": {}
+                          }
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "queryOrPathParsingError"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "message",
+                        "payload",
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "failed"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "message",
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "modelDoesNotSupportGuidance"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "message",
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "noRagDocumentsFound"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "message",
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "ragRequiresAutoTemplating"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "message",
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "unknownBaseModel"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "message",
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "unknownModelAdapter"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "message",
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "unknownRagCollection"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "message",
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "unprocessableContent"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "message",
+                        "type"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/models/{id}/fine-tune": {
+      "post": {
+        "description": "Fine-tunes the specified model with your data samples.",
+        "operationId": "FineTuneModel",
+        "summary": "Fine-tune model",
+        "tags": [
+          "Models"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The ID of the model that is being fine-tuned."
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "samples": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "fineTuningParameters": {
+                          "type": "object",
+                          "nullable": true,
+                          "properties": {
+                            "multiplier": {
+                              "type": "number",
+                              "nullable": true,
+                              "minimum": 0,
+                              "exclusiveMinimum": true
+                            }
+                          }
+                        },
+                        "inputs": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "parseSpecialTokens": {
+                                    "type": "boolean",
+                                    "default": true
+                                  },
+                                  "trainable": {
+                                    "type": "boolean",
+                                    "default": true
+                                  },
+                                  "value": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  }
+                                },
+                                "required": [
+                                  "value"
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "inputs"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "samples"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "numberOfTrainableTokens": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "sumLoss": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "numberOfTrainableTokens",
+                    "sumLoss"
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "payload": {
+                          "type": "object",
+                          "properties": {
+                            "formattedValidationError": {
+                              "nullable": true
+                            },
+                            "validationError": {}
+                          }
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "bodyParsingError"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "message",
+                        "payload",
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "payload": {
+                          "type": "object",
+                          "properties": {
+                            "flaggedContent": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "sample": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "sample"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "flaggedContent"
+                          ]
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "flaggedContent"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "message",
+                        "payload",
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "payload": {
+                          "type": "object",
+                          "properties": {
+                            "formattedValidationError": {
+                              "nullable": true
+                            },
+                            "validationError": {}
+                          }
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "queryOrPathParsingError"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "message",
+                        "payload",
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "modelIncapableOfFineTuning"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "message",
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "nanLoss"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "message",
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "unknownModelAdapter"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "message",
+                        "type"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "unprocessableContent"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "message",
+                        "type"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rag-collections": {
+      "get": {
+        "description": "Lists all RAG collections associated with your workspace.",
+        "operationId": "ListRagCollections",
+        "summary": "List RAG collections",
+        "tags": [
+          "RAG"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ragCollections": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "creationTime": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "id": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "latestUpdateTime": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "name": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "slug": {
+                            "type": "string",
+                            "enum": [
+                              "bge-large"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "creationTime",
+                          "id",
+                          "latestUpdateTime",
+                          "name",
+                          "slug"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "ragCollections"
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Creates a new collection of RAG documents.",
+        "operationId": "CreateRagCollection",
+        "summary": "Create RAG collection",
+        "tags": [
+          "RAG"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "files": {
+                    "type": "array",
+                    "nullable": true,
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name"
+                      ]
+                    },
+                    "maxItems": 20
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "slug": {
+                    "type": "string",
+                    "enum": [
+                      "bge-large"
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "slug"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rag-collections/{id}": {
+      "delete": {
+        "description": "Deletes the RAG collection.",
+        "operationId": "DeleteRagCollection",
+        "summary": "Delete RAG collection",
+        "tags": [
+          "RAG"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "Gets the RAG collection details.",
+        "operationId": "GetRagCollection",
+        "summary": "Get RAG collection",
+        "tags": [
+          "RAG"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "creationTime": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "files": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "name": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "cancelled",
+                              "failed",
+                              "succeeded",
+                              "pending",
+                              "pendingCancellation",
+                              "running"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "status"
+                        ]
+                      }
+                    },
+                    "latestUpdateTime": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "slug": {
+                      "type": "string",
+                      "enum": [
+                        "bge-large"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "creationTime",
+                    "files",
+                    "latestUpdateTime",
+                    "name",
+                    "slug"
+                  ]
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rag-collections/{id}/files": {
+      "post": {
+        "description": "Adds files to the RAG collection.",
+        "operationId": "AddFilesToRagCollection",
+        "summary": "Add files to RAG collection",
+        "tags": [
+          "RAG"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "x-gradient-workspace-id",
+            "in": "header"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name"
+                      ]
+                    },
+                    "maxItems": 20
+                  }
+                },
+                "required": [
+                  "files"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

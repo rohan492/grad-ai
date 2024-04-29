@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "apis": [
+    {
+      "identifier": "preemo",
+      "source": "@preemo/v1.0#aeuqxsplv1i8fw3",
+      "integrity": "sha512-+0HolCumbs0O19u7oJfHTL9moy5CE2fBtDvE/mrj1DtXDh6z/jR9HrSypJnn/FERyymfrbg7HvLWDZzcu2z+OQ==",
+      "installerVersion": "6.1.1"
+    }
+  ]
+}
