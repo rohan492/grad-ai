@@ -20,7 +20,25 @@ const AddToRAGCollection = async (formdata) => {
     }
 }
 
+const GetTranscriptionID = async (formdata) => {
+    try {
+        return await Client.post('/file/getTranscriptionID', formdata)
+    } catch (e) {
+        return e
+    }
+}
+
+const GetAudioTranscription = async (formdata) => {
+    try {
+        return await Client.post('/file/getAudioTranscription', formdata)
+    } catch (e) {
+        return e
+    }
+}
+
 export {
     FileUploadService,
-    AddToRAGCollection
+    AddToRAGCollection,
+    GetTranscriptionID,
+    GetAudioTranscription
 }
