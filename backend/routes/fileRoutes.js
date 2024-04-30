@@ -30,7 +30,7 @@ router.post('/upload', upload.single('file'), (req, res) => {
     console.log(file)
     sdk.auth(GRADIENT_AUTH_TOKEN);
     sdk.uploadFile({file: file.path}, {
-        type: 'ragUserFile',
+        type: 'audioFile',
         'x-gradient-workspace-id': GRADIENT_WORKSPACE_ID
     })
         .then(({ data }) => {
@@ -68,6 +68,43 @@ router.post('/addToRag', (req, res) => {
         .catch(err => {
             console.error(err)
             res.status(500).send("Error in Adding To RAG Collection")
+        });
+})
+
+router.post('/getTranscriptionID', (req, res) => {
+    const { id } = req.body
+    console.log(id)
+    sdk.auth(GRADIENT_AUTH_TOKEN);
+    sdk.createAudioTranscription({
+        fileId: id
+      }, {
+        'x-gradient-workspace-id': GRADIENT_WORKSPACE_ID
+      })
+        .then(({ data }) => {
+            console.log(data)
+            res.status(200).json(data)
+        })
+        .catch(err => {
+            console.error(err)
+            res.status(500).send("Error in Getting Transcription ID")
+        });
+})
+
+router.post('/getAudioTranscription', (req, res) => {
+    const { transcriptionId } = req.body
+    console.log(transcriptionId)
+    sdk.auth(GRADIENT_AUTH_TOKEN);
+    sdk.getAudioTranscription({
+        transcriptionId,
+        'x-gradient-workspace-id': GRADIENT_WORKSPACE_ID
+      })
+        .then(({ data }) => {
+            console.log(data)
+            res.status(200).json(data)
+        })
+        .catch(err => {
+            console.error(err)
+            res.status(500).send("Error in Creating Transcription")
         });
 })
 
