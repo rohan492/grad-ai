@@ -25,16 +25,17 @@ const ChatWindowInitial = ({
     }
   };
 
+  const ragCollectionID = localStorage.getItem("ragCollectionID")
   // Who is the most influential person of 2023?
-  const handleSend = () => {
-    if (inputFilled) {
-      setChatArray([
-        {
-          question,
-          answer: "The most influential person of 2023 is not clearly defined as the list of influential people varies based on different sources and rankings. However, some of the names that appear on the Time Magazine's 100 Most Influential People of 2023 list include Michael B. Jordan, Anthony Albanese, Elon Musk, Shah Rukh Khan, Keanu Reeves, Taylor Swift, and others. It's important to note that the concept of influence is subjective and can vary depending on the criteria used for evaluation."
-        }
-      ])
-      setInitialPage(false);
+  // answer: "The most influential person of 2023 is not clearly defined as the list of influential people varies based on different sources and rankings. However, some of the names that appear on the Time Magazine's 100 Most Influential People of 2023 list include Michael B. Jordan, Anthony Albanese, Elon Musk, Shah Rukh Khan, Keanu Reeves, Taylor Swift, and others. It's important to note that the concept of influence is subjective and can vary depending on the criteria used for evaluation."
+  const handleSend = async () => {
+    if (inputFilled && ragCollectionID) {
+        setChatArray([
+          {
+            question,
+          }
+        ])
+        setInitialPage(false);
     }
   };
 

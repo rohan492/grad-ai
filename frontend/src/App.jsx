@@ -14,6 +14,7 @@ import LogIn from './pages/Auth/Login.jsx'
 import ChatWindow from './pages/ChatWindow/ChatWindow.jsx'
 import Main from './pages/Main/Main.jsx'
 import UploadComponent from './pages/Upload/Upload.jsx'
+import RagUpload from './pages/RagUpload/RagUpload.jsx'
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("user"))
@@ -42,6 +43,7 @@ function App() {
         <Route path="/" element={<Navigate to={"/chat"} />} />
         <Route path="/chat" element={<ChatWindow />} />
         <Route path="/upload" element={<UploadComponent />} />
+        <Route path="/rag-upload" element={<RagUpload />} />
       </Route>
     </Routes>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -8,6 +8,7 @@ import {
   AudioOutlined,
   DownOutlined,
   LogoutOutlined,
+  UploadOutlined
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme, Dropdown, Space } from "antd";
 import logo from '../../assets/logo-color.png'
@@ -22,6 +23,18 @@ const Main = () => {
   const profileImg = localStorage.getItem("profile_url");
   const username = localStorage.getItem("user");
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Define a mapping from pathname to menu key
+  const pathToKeyMap = {
+    '/chat': '1',
+    '/upload': '2',
+    '/sentiment-analysis': '3', // Assuming this is your path for sentiment analysis
+    '/rag-upload': '4',
+  };
+
+  // Get the current pathname and map it to the corresponding menu key
+  const currentKey = pathToKeyMap[location.pathname] || '1'; // Default to '1' if the path doesn't match
 
   const handleLogout = () => {
     localStorage.clear();
@@ -48,7 +61,7 @@ const Main = () => {
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={["1"]}
+          selectedKeys={[currentKey]}
           items={[
             {
               key: "1",
@@ -66,6 +79,12 @@ const Main = () => {
               key: "3",
               icon: <SmileOutlined />,
               label: "Sentiment Analysis",
+            },
+            {
+              key: "4",
+              icon: <UploadOutlined />,
+              label: "RAG Collection",
+              onClick: () => navigate('/rag-upload')
             },
           ]}
         />

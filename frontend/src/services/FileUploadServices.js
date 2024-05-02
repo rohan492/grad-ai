@@ -1,5 +1,17 @@
 import { Client } from "./Client";
 
+const MultipleFileUpload = async (formdata) => {
+    try {
+        return await Client.post('/file/multi-upload', formdata, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        })
+    } catch (e) {
+        return e
+    }
+}
+
 const FileUploadService = async (formdata) => {
     try {
         return await Client.post('/file/upload', formdata, {
@@ -37,6 +49,7 @@ const GetAudioTranscription = async (formdata) => {
 }
 
 export {
+    MultipleFileUpload,
     FileUploadService,
     AddToRAGCollection,
     GetTranscriptionID,

@@ -5,9 +5,11 @@ import { motion } from "framer-motion";
 import brandLogo from "../../assets/brand-logo.png";
 import splitString from "../../utils/splitString";
 
+import { QueryRag } from "../../services/QueryServices";
+
 import "./ChatArea.css";
 
-const ChatArea = ({ chatArray, loading, setLoading }) => {
+const ChatArea = ({ chatArray, loading, setLoading, setChatArray, question }) => {
   let lastAnswerRef = useRef(null);
 
   useEffect(() => {
@@ -25,16 +27,33 @@ const ChatArea = ({ chatArray, loading, setLoading }) => {
     return () => clearTimeout(refTimeoutId);
   });
 
-  useEffect(() => {
-    let loadingTimeoutId;
-    if (loading) {
-      loadingTimeoutId = setTimeout(() => {
-        setLoading(false);
-      }, 3000);
+  const ragCollectionID = localStorage.getItem("ragCollectionID")
+  const handleDataFetch = async () => {
+    const response = await QueryRag({
+      question,
+      ragCollectionID
+    })
+    console.log(response.data.answer)
+    if (response.status === 200) {
+      setChatArray(prevChatArray => {
+        const lastIndex = prevChatArray.length - 1
+        return [
+          ...prevChatArray.slice(0, lastIndex),
+          {
+            ...prevChatArray[lastIndex],
+            answer: response.data.answer
+          }
+        ]
+      })
     }
+    setLoading(false)
+  }
 
-    return () => clearTimeout(loadingTimeoutId);
-  }, [loading]);
+  useEffect(() => {
+    if (ragCollectionID) {
+      handleDataFetch()
+    }
+  }, []);
 
   const userImg = localStorage.getItem("profile_url");
 

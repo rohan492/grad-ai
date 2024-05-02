@@ -6,6 +6,8 @@ import { ArrowUpOutlined } from "@ant-design/icons";
 import "./ChatWindowLater.css";
 import ChatArea from "../ChatArea/ChatArea.jsx";
 
+import { QueryRag } from "../../services/QueryServices";
+
 const { TextArea } = Input;
 
 const ChatWindowLater = ({
@@ -33,19 +35,40 @@ const ChatWindowLater = ({
   };
 
   // Tell me something about Devin AI
+  // "Devin AI is an autonomous artificial intelligence assistant tool created by Cognition Labs. It is branded as an 'AI software developer' and is the world's first fully autonomous AI software engineer. Devin is capable of coding, debugging, and developing, making it an innovative and groundbreaking tool for software engineering tasks. It automates complex tasks using AI, allowing developers to focus on more important work. Devin is also able to understand what is required to be built, write code, find and fix errors, and contribute as a tireless, skilled teammate. It has been the subject of much discussion and analysis in the programming and AI communities"
+  const ragCollectionID = localStorage.getItem("ragCollectionID")
+  const handleDataFetch = async () => {
+    const response = await QueryRag({
+      question,
+      ragCollectionID
+    })
+    console.log(response.data.answer)
+    if (response.status === 200) {
+      setChatArray(prevChatArray => {
+        const lastIndex = prevChatArray.length - 1
+        return [
+          ...prevChatArray.slice(0, lastIndex),
+          {
+            ...prevChatArray[lastIndex],
+            answer: response.data.answer
+          }
+        ]
+      })
+    }
+    setLoading(false)
+  }
   const handleSend = () => {
     if (inputFilled) {
       setChatArray((prevChatArray) => [
         ...prevChatArray,
         {
-          question,
-          answer:
-            "Devin AI is an autonomous artificial intelligence assistant tool created by Cognition Labs. It is branded as an 'AI software developer' and is the world's first fully autonomous AI software engineer. Devin is capable of coding, debugging, and developing, making it an innovative and groundbreaking tool for software engineering tasks. It automates complex tasks using AI, allowing developers to focus on more important work. Devin is also able to understand what is required to be built, write code, find and fix errors, and contribute as a tireless, skilled teammate. It has been the subject of much discussion and analysis in the programming and AI communities",
+          question
         },
       ]);
       setQuestion("");
       setInputFilled(false);
       setLoading(true);
+      handleDataFetch()
     }
   };
 
@@ -62,6 +85,8 @@ const ChatWindowLater = ({
         chatArray={chatArray}
         loading={loading}
         setLoading={setLoading}
+        setChatArray={setChatArray}
+        question={question}
       />
       <TextArea
         autoSize={{ minRows: 2, maxRows: 3 }}
