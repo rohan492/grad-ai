@@ -21,6 +21,80 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage })
 
+router.post('/multi-upload', upload.array('files'), (req, res) => {
+    const { ragCollectionName } = req.body
+    const files = req.files
+    // console.log(files)
+
+    if (Array.isArray(files) && files.length > 0) {
+        sdk.auth(GRADIENT_AUTH_TOKEN);
+
+        // Create an array of promises to upload files
+        const uploadPromises = files.map((file) =>
+            sdk.uploadFile(
+                { file: file.path },
+                {
+                    type: 'ragUserFile',
+                    'x-gradient-workspace-id': GRADIENT_WORKSPACE_ID,
+                }
+            ).then(({ data }) => ({
+                id: data.id,
+                name: file.originalname,
+            }))
+        );
+
+        // Use Promise.allSettled to get the results for each promise
+        Promise.allSettled(uploadPromises)
+            .then((results) => {
+                const success = [];
+                const failure = [];
+
+                // Iterate over the results to categorize success and failure
+                results.forEach((result, index) => {
+                    if (result.status === 'fulfilled') {
+                        success.push(result.value); // If fulfilled, add to success
+                    } else {
+                        failure.push({
+                            error: result.reason,
+                            ogName: files[index].originalname, // Original filename
+                        }); // If rejected, add to failure with error reason
+                    }
+                });
+
+                sdk.createRagCollection({
+                  slug: 'bge-large',
+                  name: ragCollectionName,
+                  files: success
+                }, {
+                  'x-gradient-workspace-id': GRADIENT_WORKSPACE_ID
+                })
+                  .then(({ data }) => {
+                    const { id } = data
+                    if (failure.length > 0) { // If there were failures
+                        return res.status(201).json({ // 201 since I want to extract successfull uploaded IDs
+                            message: 'Some files could not be uploaded',
+                            ragCollectionID: id,
+                            success,
+                            failure, // Return both successful and failed uploads
+                        });
+                    } else { // If all uploads succeeded
+                        return res.status(200).json({ success, ragCollectionID: id, });
+                    }
+                  })
+                  .catch((err) => {
+                    console.error(err);
+                    return res.status(500).send('Error while Creating RAG Collection');
+                  });
+            })
+            .catch((err) => { // Handle any other unexpected errors
+                console.error(err);
+                return res.status(500).send('An unexpected error occurred');
+            });
+    } else {
+        return res.status(400).send('No file uploaded.');
+    }
+})
+
 router.post('/upload', upload.single('file'), (req, res) => {
     const file = req.file
     console.log(file.path)
