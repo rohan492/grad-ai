@@ -7,6 +7,7 @@ import authMiddleware from './middlewares/authMiddleware.js'
 import userRouter from './routes/userRoutes.js'
 import fileRouter from './routes/fileRoutes.js'
 import queryRouter from './routes/queryRoutes.js'
+import summaryRouter from './routes/summaryRoutes.js'
 
 import { PORT } from './environments/environment.js'
 
@@ -33,6 +34,7 @@ app.use(authMiddleware)
 app.use('/user', userRouter)
 app.use('/file', fileRouter)
 app.use('/query', queryRouter)
+app.use('/summary', summaryRouter)
 
 app.listen(PORT, () => {
     console.log(`SERVER RUNNING ON PORT ${PORT}`)
