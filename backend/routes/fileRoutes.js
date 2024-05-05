@@ -1,12 +1,9 @@
 import { Router } from 'express'
 import sdk from '@api/preemo'
 import multer from 'multer'
+import dotenv from 'dotenv'
 
-import {
-    GRADIENT_AUTH_TOKEN,
-    GRADIENT_WORKSPACE_ID,
-    GRADIENT_RAG_ID
-} from '../environments/environment.js'
+dotenv.config()
 
 const router = Router()
 
@@ -27,7 +24,7 @@ router.post('/multi-upload', upload.array('files'), (req, res) => {
     // console.log(files)
 
     if (Array.isArray(files) && files.length > 0) {
-        sdk.auth(GRADIENT_AUTH_TOKEN);
+        sdk.auth(process.env.GRADIENT_AUTH_TOKEN);
 
         // Create an array of promises to upload files
         const uploadPromises = files.map((file) =>
@@ -35,7 +32,7 @@ router.post('/multi-upload', upload.array('files'), (req, res) => {
                 { file: file.path },
                 {
                     type: 'ragUserFile',
-                    'x-gradient-workspace-id': GRADIENT_WORKSPACE_ID,
+                    'x-gradient-workspace-id': process.env.GRADIENT_WORKSPACE_ID,
                 }
             ).then(({ data }) => ({
                 id: data.id,
@@ -66,7 +63,7 @@ router.post('/multi-upload', upload.array('files'), (req, res) => {
                   name: ragCollectionName,
                   files: success
                 }, {
-                  'x-gradient-workspace-id': GRADIENT_WORKSPACE_ID
+                  'x-gradient-workspace-id': process.env.GRADIENT_WORKSPACE_ID
                 })
                   .then(({ data }) => {
                     const { id } = data
@@ -102,10 +99,10 @@ router.post('/upload', upload.single('file'), (req, res) => {
         return res.status(400).send('No file uploaded.');
     }
     console.log(file)
-    sdk.auth(GRADIENT_AUTH_TOKEN);
+    sdk.auth(process.env.GRADIENT_AUTH_TOKEN);
     sdk.uploadFile({file: file.path}, {
         type: 'audioFile',
-        'x-gradient-workspace-id': GRADIENT_WORKSPACE_ID
+        'x-gradient-workspace-id': process.env.GRADIENT_WORKSPACE_ID
     })
         .then(({ data }) => {
             console.log(data)
@@ -122,7 +119,7 @@ router.post('/addToRag', (req, res) => {
     const { id, ogName } = req.body
     console.log(id)
     console.log(ogName)
-    sdk.auth(GRADIENT_AUTH_TOKEN);
+    sdk.auth(process.env.GRADIENT_AUTH_TOKEN);
     sdk.server('https://api.gradient.ai/api');
     sdk.addFilesToRagCollection({
     files: [
@@ -132,8 +129,8 @@ router.post('/addToRag', (req, res) => {
         }
     ]
     }, {
-    id: GRADIENT_RAG_ID,
-    'x-gradient-workspace-id': GRADIENT_WORKSPACE_ID
+    id: process.env.GRADIENT_RAG_ID,
+    'x-gradient-workspace-id': process.env.GRADIENT_WORKSPACE_ID
     })
         .then(({ data }) => {
             console.log(data)
@@ -148,11 +145,11 @@ router.post('/addToRag', (req, res) => {
 router.post('/getTranscriptionID', (req, res) => {
     const { id } = req.body
     console.log(id)
-    sdk.auth(GRADIENT_AUTH_TOKEN);
+    sdk.auth(process.env.GRADIENT_AUTH_TOKEN);
     sdk.createAudioTranscription({
         fileId: id
       }, {
-        'x-gradient-workspace-id': GRADIENT_WORKSPACE_ID
+        'x-gradient-workspace-id': process.env.GRADIENT_WORKSPACE_ID
       })
         .then(({ data }) => {
             console.log(data)
@@ -167,10 +164,10 @@ router.post('/getTranscriptionID', (req, res) => {
 router.post('/getAudioTranscription', (req, res) => {
     const { transcriptionId } = req.body
     console.log(transcriptionId)
-    sdk.auth(GRADIENT_AUTH_TOKEN);
+    sdk.auth(process.env.GRADIENT_AUTH_TOKEN);
     sdk.getAudioTranscription({
         transcriptionId,
-        'x-gradient-workspace-id': GRADIENT_WORKSPACE_ID
+        'x-gradient-workspace-id': process.env.GRADIENT_WORKSPACE_ID
       })
         .then(({ data }) => {
             console.log(data)

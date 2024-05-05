@@ -1,8 +1,9 @@
 import { mongoose } from 'mongoose'
+import dotenv from 'dotenv'
 
-import { MONGODB_CONNECTION_STRING } from '../environments/environment.js'
+dotenv.config()
 
-mongoose.connect(MONGODB_CONNECTION_STRING)
+mongoose.connect(process.env.MONGODB_CONNECTION_STRING)
 
 const UserSchema = new mongoose.Schema({
     username: String,

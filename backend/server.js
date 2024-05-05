@@ -1,7 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
-import multer from 'multer'
+import dotenv from 'dotenv'
 
 import authMiddleware from './middlewares/authMiddleware.js'
 import userRouter from './routes/userRoutes.js'
@@ -9,7 +9,7 @@ import fileRouter from './routes/fileRoutes.js'
 import queryRouter from './routes/queryRoutes.js'
 import summaryRouter from './routes/summaryRoutes.js'
 
-import { PORT } from './environments/environment.js'
+dotenv.config()
 
 const corsOptions = {
     origin: '*',
@@ -36,6 +36,6 @@ app.use('/file', fileRouter)
 app.use('/query', queryRouter)
 app.use('/summary', summaryRouter)
 
-app.listen(PORT, () => {
-    console.log(`SERVER RUNNING ON PORT ${PORT}`)
+app.listen(process.env.PORT, () => {
+    console.log(`SERVER RUNNING ON PORT ${process.env.PORT}`)
 })

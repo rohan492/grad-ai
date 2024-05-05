@@ -1,10 +1,8 @@
 import { Router } from 'express'
 import sdk from '@api/preemo'
+import dotenv from 'dotenv'
 
-import {
-    GRADIENT_AUTH_TOKEN,
-    GRADIENT_WORKSPACE_ID
-} from '../environments/environment.js'
+dotenv.config()
 
 const router = Router()
 
@@ -12,7 +10,7 @@ router.post('/rag', (req, res) => {
     const { ragCollectionID, question } = req.body
     console.log(ragCollectionID)
     console.log(question)
-    sdk.auth(GRADIENT_AUTH_TOKEN);
+    sdk.auth(process.env.GRADIENT_AUTH_TOKEN);
     sdk.generateAnswer({
         source: {
             type: 'rag',
@@ -20,7 +18,7 @@ router.post('/rag', (req, res) => {
         },
         question
     }, {
-        'x-gradient-workspace-id': GRADIENT_WORKSPACE_ID
+        'x-gradient-workspace-id': process.env.GRADIENT_WORKSPACE_ID
     })
         .then(({ data }) => {
             console.log(data)

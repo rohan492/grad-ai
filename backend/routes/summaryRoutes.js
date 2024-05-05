@@ -1,8 +1,9 @@
 import { Router } from "express";
 import multer from 'multer'
 import sdk from '@api/preemo'
+import dotenv from 'dotenv'
 
-import { GRADIENT_AUTH_TOKEN, GRADIENT_WORKSPACE_ID } from "../environments/environment.js";
+dotenv.config()
 
 const router = Router()
 
@@ -24,9 +25,9 @@ router.post('/pdf', upload.single('file'), (req, res) => {
         return res.status(400).send('No file uploaded.');
     }
     console.log(file)
-    sdk.auth(GRADIENT_AUTH_TOKEN);
+    sdk.auth(process.env.GRADIENT_AUTH_TOKEN);
     sdk.extractPdf({file: file.path}, {
-        'x-gradient-workspace-id': GRADIENT_WORKSPACE_ID
+        'x-gradient-workspace-id': process.env.GRADIENT_WORKSPACE_ID
     })
         .then(({ data }) => {
             const mainText = data.pages.map(page => page.text).join('\n')
@@ -38,9 +39,9 @@ router.post('/pdf', upload.single('file'), (req, res) => {
 router.post('/summary', (req, res) => {
     const { extractedTextFromPDF, length } = req.body
     // console.log(extractedTextFromPDF)
-    sdk.auth(GRADIENT_AUTH_TOKEN);
+    sdk.auth(process.env.GRADIENT_AUTH_TOKEN);
     sdk.summarizeDocument({document: extractedTextFromPDF, length}, {
-        'x-gradient-workspace-id': GRADIENT_WORKSPACE_ID
+        'x-gradient-workspace-id': process.env.GRADIENT_WORKSPACE_ID
     })
         .then(({ data }) => {
             const { summary } = data

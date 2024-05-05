@@ -6,3 +6,5 @@ uploads/*
 
 # Do not ignore the uploads folder itself
 !uploads/
+
+.env
