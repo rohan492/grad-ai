@@ -96,7 +96,7 @@ const UploadComponent = () => {
                     Click or drag file to this area to upload
                 </p>
                 <p className="text-white">
-                    Must be an audio file no larger than 150 MiB. 
+                    Must be an audio file no larger than 150 MB. 
                 </p>
             </Dragger>
         ) : activeState === 1 ? (

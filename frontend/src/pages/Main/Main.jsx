@@ -3,7 +3,7 @@ import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  SmileOutlined,
+  FileOutlined,
   QuestionOutlined,
   AudioOutlined,
   DownOutlined,
@@ -27,10 +27,10 @@ const Main = () => {
 
   // Define a mapping from pathname to menu key
   const pathToKeyMap = {
-    '/chat': '1',
-    '/upload': '2',
-    '/sentiment-analysis': '3', // Assuming this is your path for sentiment analysis
-    '/rag-upload': '4',
+    '/rag-upload': '1',
+    '/chat': '2',
+    '/upload': '3',
+    '/summary': '4',
   };
 
   // Get the current pathname and map it to the corresponding menu key
@@ -65,27 +65,28 @@ const Main = () => {
           items={[
             {
               key: "1",
+              icon: <UploadOutlined />,
+              label: "RAG Collection",
+              onClick: () => navigate('/rag-upload')
+            },
+            {
+              key: "2",
               icon: <QuestionOutlined />,
               label: "Question/Answer",
               onClick: () => navigate('/chat')
             },
             {
-              key: "2",
+              key: "3",
               icon: <AudioOutlined />,
               label: "Audio Transcription",
               onClick: () => navigate('/upload')
             },
             {
-              key: "3",
-              icon: <SmileOutlined />,
-              label: "Sentiment Analysis",
-            },
-            {
               key: "4",
-              icon: <UploadOutlined />,
-              label: "RAG Collection",
-              onClick: () => navigate('/rag-upload')
-            },
+              icon: <FileOutlined />,
+              label: "PDF Summary",
+              onClick: () => navigate('/summary')
+            }
           ]}
         />
       </Sider>

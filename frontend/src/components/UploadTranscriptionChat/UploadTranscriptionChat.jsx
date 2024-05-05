@@ -82,22 +82,25 @@ const UploadTranscriptionChat = ({ chatArray, loading }) => {
                 active
               />
               {(!loading || index !== chatArray.length - 1) && (
-                <motion.div
-                  initial="hidden"
-                  animate="reveal"
-                  transition={{ staggerChildren: 0.002 }}
-                  // onAnimationComplete={() => setSourceVisible(true)}
-                >
-                  {splitString(chat.answer).map((ch, idx) => (
-                    <motion.span
-                      key={idx}
-                      transition={{ duration: 0.5 }}
-                      variants={charVariants}
-                    >
-                      {ch}
-                    </motion.span>
-                  ))}
-                </motion.div>
+                chat.answer.split('\n').map((sentence, indx) => (
+                  <motion.div
+                    initial="hidden"
+                    animate="reveal"
+                    transition={{ staggerChildren: 0.002 }}
+                    key={indx}
+                    // onAnimationComplete={() => setSourceVisible(true)}
+                  >
+                    {splitString(sentence).map((ch, idx) => (
+                      <motion.span
+                        key={idx}
+                        transition={{ duration: 0.5 }}
+                        variants={charVariants}
+                      >
+                        {ch}
+                      </motion.span>
+                    ))}
+                  </motion.div>
+                ))
               )}
             </div>
           </div>

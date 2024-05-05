@@ -62,6 +62,13 @@ const ChatArea = ({ chatArray, loading, setLoading, setChatArray, question }) =>
     reveal: { opacity: 1 },
   };
 
+  const isNumberedList = (text) => {
+    // Check if the text starts with a number followed by a dot and a space
+    const result = /^(-|\d+\.\s)/.test(text?.trim());
+    // console.log(text, result1);
+    return result;
+  };
+
   return (
     <div className="h-[90%] overflow-scroll flex flex-col gap-8">
       {chatArray.map((chat, index) => (
@@ -99,22 +106,26 @@ const ChatArea = ({ chatArray, loading, setLoading, setChatArray, question }) =>
                 active
               />
               {(!loading || index !== chatArray.length - 1) && (
-                <motion.div
-                  initial="hidden"
-                  animate="reveal"
-                  transition={{ staggerChildren: 0.002 }}
-                  // onAnimationComplete={() => setSourceVisible(true)}
-                >
-                  {splitString(chat.answer).map((ch, idx) => (
-                    <motion.span
-                      key={idx}
-                      transition={{ duration: 0.5 }}
-                      variants={charVariants}
-                    >
-                      {ch}
-                    </motion.span>
-                  ))}
-                </motion.div>
+                chat.answer.split('\n').map((sentence, indx) => (
+                  <motion.div
+                    initial="hidden"
+                    animate="reveal"
+                    transition={{ staggerChildren: 0.002 }}
+                    key={indx}
+                    className={`${isNumberedList(sentence.trim()) && 'pl-5'}`}
+                    // onAnimationComplete={() => setSourceVisible(true)}
+                  >
+                    {splitString(sentence).map((ch, idx) => (
+                      <motion.span
+                        key={idx}
+                        transition={{ duration: 0.5 }}
+                        variants={charVariants}
+                      >
+                        {ch}
+                      </motion.span>
+                    ))}
+                  </motion.div>
+                ))
               )}
             </div>
           </div>

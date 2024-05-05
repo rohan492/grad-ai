@@ -25,7 +25,7 @@ const LogIn = ({ setIsLoggedIn }) => {
     console.log(googleResponse)
     if (googleResponse?.status === 200) {
       setIsLoggedIn(true)
-      navigate("/chat")
+      navigate("/rag-upload")
       message.success(googleResponse?.data?.msg || "Login Successfull!")
     } else {
       message.error("There was an error. Please try again after sometime.")
